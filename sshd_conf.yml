@@ -1,0 +1,17 @@
+---
+- hosts: caampc160x
+  vars_files:
+       - workstations.yml
+  tasks:
+  - name: Remove a line if present
+     lineinfile:
+       path: /etc/ssh/sshd_config
+       regex: ^AllowGroups
+       line: AllowGroups root genshenyemao
+       state: absent
+  - name: Add AU to file
+     lineinfile:
+       path: /etc/ssh/sshd_config
+       regex: ^AllowUsers
+       line: AllowUsers root genshenyemao {{ workstations[ansible_hostname].runner }}
+       state: present

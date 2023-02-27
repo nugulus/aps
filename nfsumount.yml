@@ -1,0 +1,11 @@
+---
+- hosts: caam181015.caam.rice.edu
+  tasks:
+  - name: unmount nfs
+    mount:
+             path: /opt1/opt.LOCAL
+             state: unmounted
+    register: result
+          
+  - debug: 
+        var=result

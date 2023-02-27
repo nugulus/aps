@@ -1,0 +1,16 @@
+---
+- hosts: cmor2208f.caam.rice.edu
+  gather_facts: true
+  tasks:
+  - name: Ensure dir /opt/info exist
+    file: path=/opt/info state=directory mode=0755
+  - name: Print the network interface name and mac
+    shell: echo "{{ ansible_product_serial }} {{ ansible_default_ipv4.interface }} {{ ansible_default_ipv4.macaddress }}"
+    register: ifmac
+    ignore_errors: true
+  - copy: content="{{ ifmac.stdout }}" dest=/opt/info/ifmac mode=0644
+
+#  - debug: msg="{{ ifmac.stdout }}"
+
+#  - name: Insert the mac address into the customer license
+#  debug: msg="{{ hostvars[inventory_hostname][ansible_default_ipv4] }}"

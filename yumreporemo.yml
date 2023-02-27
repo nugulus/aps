@@ -1,0 +1,8 @@
+---
+- hosts: han.stat.rice.edu
+  tasks:
+  - name: Remove repository (and clean up left-over metadata)
+    ansible.builtin.yum_repository:
+      name: EI_Zabbix4-EL8_Zabbix4-EL8
+      state: absent
+    notify: yum-clean-metadata

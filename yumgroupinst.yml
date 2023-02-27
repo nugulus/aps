@@ -1,0 +1,7 @@
+---
+- hosts: cmor2208
+  tasks:
+  - name: Install the 'Office Suite and Productivity' package group
+    ansible.builtin.yum:
+      name: "@Office Suite and Productivity"
+      state: present

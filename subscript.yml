@@ -1,0 +1,7 @@
+---
+- hosts: caam181010.caam.rice.edu
+  tasks:
+#  - shell: rpm -e katello-ca-consumer-rhel-sat6-n1.rice.edu-1.0-4
+  - shell: rpm -i https://satellite.rice.edu/pub/katello-ca-consumer-latest.noarch.rpm
+  - shell: subscription-manager clean
+  - shell: subscription-manager register --org EI --activationkey caam-8 --force

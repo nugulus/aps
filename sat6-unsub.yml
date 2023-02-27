@@ -1,0 +1,16 @@
+---
+- hosts: one
+  tasks:
+  - name: Unregister from rhn6.rice.edu
+    redhat_subscription:
+      state: absent
+    ignore_errors: yes
+
+  - name: Removed rhn6 pointers
+    yum:
+      name:
+        - katello-ca-consumer*
+        - katello-agent
+        - insights-client
+      state: absent
+    ignore_errors: yes

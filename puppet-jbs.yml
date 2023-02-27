@@ -1,0 +1,15 @@
+---
+- hosts: server
+  tasks:
+  - name: Install puppet repo
+    yum: name=https://yum.puppetlabs.com/puppet5/puppet5-release-el-7.noarch.rpm
+  - rpm_key:
+      state: present
+      key: /etc/pki/rpm-gpg/RPM-GPG-KEY-puppet5-release
+  - name: Install puppet package
+    yum: name=puppet-agent state=latest
+  - name: Adding path in startup file
+    lineinfile: dest=/root/.bash_profile line='export PATH=$PATH:/opt/puppetlabs/puppet/bin' insertafter='EOF' regexp='export PATH=\$PATH:/opt/puppetlabs/puppet/bin' state=present
+  - name: Source the startup file
+    shell: source /root/.bash_profile
+  - script: /root/bin/puppet-jbs.sh

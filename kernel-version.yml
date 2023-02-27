@@ -1,0 +1,10 @@
+---
+- hosts: gmig
+  vars:
+   kernel_version: "{{ ansible_kernel }}"
+  tasks:
+   - name: 'kernel version from facts'
+     debug:
+      msg: '{{ansible_hostname}} {{ansible_kernel}}'
+#     when: ansible_kernel |  version_compare('3','<')
+

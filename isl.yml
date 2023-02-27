@@ -1,0 +1,45 @@
+---
+
+- name: Compile isl from sources
+  hosts: one
+  vars:
+      isl_version: isl-0.18
+      isl_tarball_url: "https://gcc.gnu.org/pub/gcc/infrastructure/isl-0.18.tar.bz2"
+      isl_install_dir: "/tmp/{{ isl_version }}"
+
+  tasks:
+  - name: Installing isl Dependencies
+    yum:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - libmpc-devel
+      - gmp-devel
+      - mpfr-devel
+
+  - name: Download isl
+    get_url:
+      url: "{{ isl_tarball_url }}"
+      dest: "/tmp/{{ isl_version }}.tar.bz2"
+    register: isl_source
+
+  - name: Unpacking isl
+    unarchive:
+      copy: no
+      dest: /tmp
+      src: "{{ isl_source.dest }}"
+    when: isl_source.changed
+    register: isl_source_unpack
+
+  - name: Configuring isl
+    command: "./configure --prefix=/usr/local"
+    args:
+      chdir: "{{ isl_install_dir }}"
+#    when: isl_source_unpack|changed
+    register: isl_configure
+
+  - name: Installing isl
+    shell: make && make install
+    args:
+      chdir: "{{ isl_install_dir }}"
+    when: isl_configure|changed

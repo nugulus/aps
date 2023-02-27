@@ -1,0 +1,15 @@
+---
+- hosts: hv.caam.rice.edu
+  tasks:
+  - name: Install/update xagt
+    yum:
+      name: xagt
+      state: latest
+  - name: Copy config file
+    copy:
+       src: /var/www/html/sharedfiles/agent_config.json
+       dest: /opt/fireeye
+       mode: preserve
+  - shell: /opt/fireeye/bin/xagt -i /opt/fireeye/agent_config.json
+  - name: Start xagt service
+    service: name=xagt state=started enabled=yes

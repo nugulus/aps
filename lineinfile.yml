@@ -1,0 +1,21 @@
+---
+- hosts: one
+  tasks:
+  - name: Remove the LINKDELAY=20 line
+    lineinfile:
+      path: /etc/sysconfig/network-scripts/ifcfg-{{ ansible_default_ipv4.interface }}
+      regexp: '^LINKDELAY'
+      line: 'LINKDELAY=20'
+      state: absent
+  - name: Add the LINKDELAY=20 line at end file
+    lineinfile:
+      path: /etc/sysconfig/network-scripts/ifcfg-{{ ansible_default_ipv4.interface }}
+      regexp: '^LINKDELAY'
+      line: 'LINKDELAY=20'
+      insertafter: EOF
+  - name: Modify a line in file
+    lineinfile:
+      path: /etc/default/grub
+      regexp: '^GRUB_CMDLINE_LINUX'
+      line: GRUB_CMDLINE_LINUX="crashkernel=auto resume=/dev/mapper/rhel-swap rd.lvm.lv=rhel/root rd.lvm.lv=rhel/swap rhgb quiet modprobe.blacklist=nouveau"
+      state: present

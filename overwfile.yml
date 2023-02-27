@@ -1,0 +1,13 @@
+---
+- hosts: three
+  tasks:
+  - name: Download ldap.conf
+    get_url:
+      url: http://qi.arc.rice.edu/sharedfiles/ldap.conf
+      dest: /etc/openldap/ldap.conf
+      force: yes
+      mode: 0644
+  - name: Restart service autofs
+    ansible.builtin.service:
+      name: autofs
+      state: restarted

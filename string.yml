@@ -1,0 +1,9 @@
+---
+- hosts: one
+  vars:
+    a: ansible_facts['domain']
+    b: stat
+  tasks:
+    - debug:
+        msg: "caam is part of the domain name"
+      when: b is subset(a)

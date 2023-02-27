@@ -1,0 +1,8 @@
+- hosts: rc.stat.rice.edu
+  become: true
+  tasks:
+   - name: Create fact directory
+     file:
+#       path: /etc/pki/CA/certs/
+       path: /opt3
+       state: directory

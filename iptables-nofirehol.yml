@@ -1,0 +1,12 @@
+---
+- hosts: one
+  tasks:
+  - name: Download iptables file
+    get_url: 
+      url: http://cassini.rice.edu/sharedfiles/iptables.gmig1504
+      dest: /etc/sysconfig/iptables
+      force: yes
+      mode: 0644
+  - name: Start the service
+    service: name=iptables state=restarted enabled=yes
+   

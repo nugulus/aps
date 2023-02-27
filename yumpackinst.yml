@@ -1,0 +1,43 @@
+---
+- hosts: three
+  tasks:
+  - name: Install yum Packages
+    yum: 
+      name: "{{ packages }}"
+      state: latest
+    vars:
+      packages:
+# This set of packages are required by running R
+#      - pcre2
+#      - pcre2-devel
+#      - blas
+#      - blas-devel
+#      - "@Development tools"
+#      - python36-jupyter-core
+#      - mesa-libGLU
+#      - libpng12-devel
+#      - singularity
+#      - ant
+#      - zoom
+#      - google-chrome-stable
+#      - git
+#      - texlive-*
+#      - texstudio-qt4
+#       - mesa-libGL-18.3.4-12.el7_9.i686
+#       - libxml2-2.9.1-6.el7_9.6.i686
+#       - libxslt-1.1.28-6.el7.i686
+#       - qt-4.8.7-9.el7_9.i686
+#       - qt-x11-4.8.7-9.el7_9.i686
+#       - libwebp-0.3.0-10.el7_9.i686
+#       - gstreamer-plugins-base-0.10.36-10.el7.i686
+#       - libXScrnSaver-1.2.2-6.1.el7.i686
+#       - alsa-plugins-pulseaudio.i686
+       - mesa-libGL.i686
+       - libxml2.i686
+       - libxslt.i686
+       - qt.i686
+       - qt-x11.i686
+       - libwebp.i686
+       - gstreamer-plugins-base.i686
+       - libXScrnSaver.i686
+       - alsa-plugins-pulseaudio.i686

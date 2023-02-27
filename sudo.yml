@@ -1,0 +1,8 @@
+---
+ - hosts: mantle.rice.edu
+   tasks:
+   - name: Ansible create file with content example
+     copy:
+      dest: "/etc/sudoers.d/niu"
+      content: |
+        niu    ALL=(ALL)    ALL

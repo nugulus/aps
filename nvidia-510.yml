@@ -1,0 +1,20 @@
+---
+- hosts: gmig1506.caam.rice.edu
+  tasks:
+  - name: Remove yum Packages
+    yum: 
+      name: "{{ packages }}"
+      state: absent
+    vars:
+      packages:
+      - cuda*
+      - nvida*
+  - name: Install yum Packages
+    yum: 
+      name: "{{ packages }}"
+      state: latest
+    vars:
+      packages:
+      - nvidia-driver-branch-510
+      - cuda-11-6
+# Tested to work at gmig1506.caam.rice.edu

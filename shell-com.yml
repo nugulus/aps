@@ -1,0 +1,5 @@
+---
+- hosts: sparky.rice.edu
+  tasks:
+#  - shell: ssh -i /root/.ssh/jz71_rsa jz71@puppet.arc.rice.edu sudo puppet cert sign caampc1306.caam.rice.edu 
+  - shell: subscription-manager repos --disable EI_Nvidia-EL8_x86_64 --disable EI_RiceCustom-EL8_NginMX-EL8 --disable EI_Rsyslog8-EL8_rsyslog_v8 --disable EI_Zabbix4-EL8_Zabbix4-EL8

@@ -1,0 +1,101 @@
+---
+- hosts: one
+  tasks:
+  - name: Stop the ypbind service
+    service: name=ypbind state=stopped enabled=no
+  - name: Install yum Packages
+    yum:
+      name: "{{ packages }}"
+      state: latest
+    vars:
+      packages:
+      - sssd 
+      - openldap 
+      - openldap-clients 
+      - autofs 
+      - cups 
+      - nfs-utils 
+      - environment-modules
+  - name: Download automount map files
+    get_url: 
+      url: http://cassini.rice.edu/STAT/{{item}}
+      dest: /etc/{{item}}
+      force: yes
+      mode: 0644
+    with_items:
+    - auto.home
+    - auto.www
+    - auto.master
+    - auto.import
+  - name: Download sssd.conf ldap.conf 157753a5.0 client.conf modulespath osver.*
+    get_url: 
+      url: http://cassini.rice.edu/STAT/sssd.conf
+      dest: /etc/sssd/sssd.conf
+      force: yes
+      mode: 0600
+  - name: Download ldap.conf
+    get_url: 
+      url: http://cassini.rice.edu/STAT/ldap.conf
+      dest: /etc/openldap/ldap.conf
+      force: yes
+      mode: 0644
+  - name: Ensure dir cacerts exist
+    file: path=/etc/openldap/cacerts state=directory
+  - name: Download CA cert file
+    get_url: 
+      url: http://cassini.rice.edu/STAT/cacerts/157753a5.0
+      dest: /etc/openldap/cacerts/157753a5.0
+      force: yes
+      mode: 0644
+  - name: Download cups client configuration file
+    get_url: 
+      url: http://cassini.rice.edu/STAT/client.conf
+      dest: /etc/cups/client.conf
+      force: yes
+      mode: 0644
+  - name: Download modulespath file
+    get_url: 
+      url: http://cassini.rice.edu/STAT/modulespath
+      dest: /usr/share/Modules/init/.modulespath
+      force: yes
+      mode: 0644
+  - name: Download OSVER checking files
+    get_url: 
+      url: http://cassini.rice.edu/STAT/{{item}}
+      dest: /etc/profile.d/{{item}}
+      force: yes
+      mode: 0644
+    with_items:
+    - osver.sh
+    - osver.csh
+  - name: Start sssd service
+    service: name=sssd state=restarted enabled=yes
+  - name: Run authconfig
+    script: /var/www/html/STAT/authconfig.sh
+  - name: Start autofs service
+    service: name=autofs state=restarted enabled=yes
+  - name: Stop NetworkManager service
+    service: name=NetworkManager state=stopped enabled=no
+  - name: Ensure dir /opt2 exist
+    file: path=/opt2 state=directory
+  - name: line insert
+    lineinfile:
+        regexp: 'nfs.rdf.rice.edu'
+        path: /etc/fstab
+        line: 'nfs.rdf.rice.edu:/ifs/research/shares/nfs/stat  /opt2   nfs     intr,bg,vers=3 0 0'
+        state: present
+        insertbefore: BOF
+  - name: Get /opt2 mounted
+    mount: 
+      path: /opt2
+      src: nfs.rdf.rice.edu:/ifs/research/shares/nfs/stat
+      fstype: nfs
+      opts: defaults,vers=3
+      state: present
+  - name: Disable selinux
+    command: setenforce 0
+  - name: Replace enforcing by permissive
+    replace:
+      path: /etc/sysconfig/selinux
+      regexp: '[Ee]nforcing'
+      replace: 'permissive'

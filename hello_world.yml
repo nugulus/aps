@@ -1,0 +1,7 @@
+---
+- name: Hello World
+  hosts: "{{ host_vars}}"
+
+  tasks:
+  - name: Hello World!
+    shell: hostname > /tmp/hello.out

@@ -1,0 +1,17 @@
+---
+- hosts: one
+  tasks:
+  - name: Download certbot-renew.service
+    get_url: 
+      url: http://cassini.rice.edu/sharedfiles/certbot-renewal.service
+      dest: /etc/systemd/system/certbot-renewal.service
+      force: yes
+      mode: 0644
+  - name: Download certbot-renew.timer
+    get_url: 
+      url: http://cassini.rice.edu/sharedfiles/certbot-renewal.timer
+      dest: /etc/systemd/system/certbot-renewal.timer
+      force: yes
+      mode: 0644
+  - name: Start the timer
+    service: name=certbot-renewal.timer state=restarted enabled=yes

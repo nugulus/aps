@@ -1,0 +1,10 @@
+---
+- hosts: one
+  tasks:
+  - name: remove files and directories
+    file:
+      state: "{{ item }}"
+      path: "/var/local"
+    with_items:
+      - absent
+      - directory

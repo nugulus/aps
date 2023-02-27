@@ -1,0 +1,8 @@
+---
+- hosts: heinken
+  tasks:
+  - name: Replace a line
+    replace:
+      path: /etc/selinux/config
+      regexp: '(\s+)SELINUX=[Ee]nforcing(\s+.*)?$'
+      replace: '\1SELINUX=permissive\2'

@@ -1,0 +1,8 @@
+---
+- hosts: cmor2208
+  tasks:
+  - name: Copy client.conf
+    copy:
+       src: /var/www/html/sharedfiles/client.conf
+       dest: /etc/cups
+       mode: preserve

@@ -1,0 +1,29 @@
+---
+- hosts: cmor2208b.caam.rice.edu
+  tasks:
+  - name: Install yum Packages
+    yum:
+      name: "{{ packages }}"
+      state: latest
+    vars:
+      packages:
+      - dkms
+      - libstdc++.i686
+      - libglvnd-devel
+  - name: ensure file exists
+    copy:
+      content: ""
+      dest: /etc/modprobe.d/blacklist-nouveau.conf
+      force: no
+  - name: Update display driver config
+    lineinfile:
+      path: /etc/modprobe.d/blacklist-nouveau.conf
+      state: present
+      line: "{{ item }}"
+    with_items:
+    - 'blacklist nouveau'
+    - 'options nouveau modeset=0'
+  - name: Stop service gdm, if started
+    ansible.builtin.service:
+      name: gdm
+      state: stopped

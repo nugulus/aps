@@ -1,0 +1,10 @@
+---
+- hosts: one
+  tasks:
+#   - script: /root/bin/sat6reg_s.sh
+#   - script: /root/bin/sat6reg_w.sh
+#   - script: /root/bin/add.computer
+#   - script: /root/bin/sdb
+#   - script: /root/bin/rpmdb.clean
+#   - script: /root/bin/addagent.sh
+   - script: src/linux/rac/install_racadm.sh #Require be at rac directory

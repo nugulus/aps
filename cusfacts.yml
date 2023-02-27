@@ -1,0 +1,28 @@
+- hosts: one
+  become: true
+  tasks:
+   - name: Create fact directory
+     file:
+       path: /etc/ansible/facts.d/
+       state: directory
+   - name: Create a static custom fact foo
+     copy:
+       content: '"jz71"'
+       dest: /etc/ansible/facts.d/admin.fact
+#   - name: Create a dynamic custom fact foobar
+#     copy:
+#       dest: /etc/ansible/facts.d/foobar.fact
+#       mode: 0775
+#       content: |
+#         #!/usr/bin/python3
+#         import json
+#         def render_data(data):
+#            return json.dumps(data)
+#         arbitrary_data = {}
+#         arbitrary_data["foobar"] = []
+#         arbitrary_data["foobar"].append("foo")
+#         if True:
+#            arbitrary_data["foobar"].append("bar")
+#         print(render_data(arbitrary_data["foobar"]))
+# To retrieve
+# ansible stat-test.stat.rice.edu -m setup -a "filter=ansible_local"

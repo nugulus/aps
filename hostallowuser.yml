@@ -1,0 +1,28 @@
+---
+ - hosts: one
+#   - name: Include vars of workstations.yml into the 'workstations' variable (2.2).
+   vars_files:
+       - workstations.yml
+   tasks:
+     # Items from loop can be used in when: statements
+#     - name: set_fact when {{ ansible_hostname }} in key
+#       set_fact:
+#         "{{ ansible_hostname }}": true
+#       loop: "{{ lookup('dict', workstations) }}"
+#       when: "{{ ansible_hostname }} in item.key"
+#     - debug:
+#         msg: "{{ workstations[ansible_hostname].runner }}"
+#       when: ansible_hostname in workstations
+   - name: Remove a line if present
+     lineinfile:
+       path: /etc/ssh/sshd_config
+       regex: ^AllowGroups
+       line: AllowGroups root genshenyemao
+       state: absent
+       backup: yes
+   - name: Add AU to file
+     lineinfile:
+       path: /etc/ssh/sshd_config
+       regex: ^AllowUsers
+       line: AllowUsers root genshenyemao {{ workstations[ansible_hostname].runner }}
+       state: present

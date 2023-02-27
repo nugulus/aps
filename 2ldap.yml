@@ -1,0 +1,116 @@
+---
+- hosts: polonius.caam.rice.edu
+  tasks:
+  - name: Stop the ypbind service
+    service: name=ypbind state=stopped enabled=no
+    ignore_errors: true
+  - name: Install yum Packages
+    yum:
+      name: "{{ packages }}"
+      state: latest
+    vars:
+      packages:
+      - sssd 
+      - openldap 
+      - openldap-clients 
+      - autofs 
+      - cups 
+      - nfs-utils 
+      - environment-modules
+      - tcsh
+      - pcre2
+      - pcre2-devel
+  - name: Ensure dir cacerts exist
+    file: path=/etc/openldap/cacerts state=directory
+  - name: Download CA cert file
+    get_url:
+      url: http://qi.arc.rice.edu/sharedfiles/cacerts/fc5a8f99.0
+      dest: /etc/openldap/cacerts/fc5a8f99.0
+      force: yes
+      mode: 0644
+  - name: Remove the expired certificate
+    file:
+        path: /etc/openldap/cacerts/157753a5.0
+        state: absent
+  - name: Download autofs file to use openldap maps
+    get_url:
+      url: http://qi.arc.rice.edu/sharedfiles/autofs
+      dest: /etc/sysconfig/autofs
+      force: yes
+      mode: 0644
+  - name: Download nsswitch.conf file.
+    get_url:
+      url: http://qi.arc.rice.edu/sharedfiles/nsswitch.conf
+      dest: /etc/nsswitch.conf
+      force: yes
+      mode: 0644
+  - name: Delete multiple files
+    file:
+      path: "{{ item }}"
+      state: absent
+    with_items:
+      - /etc/auto.misc
+      - /etc/auto.net
+      - /etc/auto.master
+      - /etc/auto.master.rpmnew
+      - /etc/auto.smb
+      - /etc/auto.import
+  - name: remove files and directories
+    file:
+      state: "{{ item }}"
+      path: "/etc/auto.master.d/"
+    with_items:
+      - absent
+      - directory
+  - name: Copy auto.home to /var/local
+    copy: remote_src=True src=/etc/auto.home dest=/var/local/auto.home
+    ignore_errors: true
+  - name: Remove auto.home file
+    file: path=/etc/auto.home state=absent
+    ignore_errors: true
+  - name: Copy auto.www to /var/local
+    copy: remote_src=True src=/etc/auto.www dest=/var/local/auto.www
+    ignore_errors: true
+  - name: Remove auto.www file
+    file: path=/etc/auto.www state=absent
+    ignore_errors: true
+  - name: "Download the proper sssd.conf file"
+    get_url:
+      url: http://qi.arc.rice.edu/sharedfiles/sssd.conf
+      dest: /etc/sssd/sssd.conf
+      force: yes
+      mode: 0600
+  - name: Download modulespath file
+    get_url: 
+      url: http://qi.arc.rice.edu/sharedfiles/modulespath
+      dest: /usr/share/Modules/init/.modulespath
+      force: yes
+      mode: 0644
+  - name: Download OSVER checking files
+    get_url: 
+      url: http://qi.arc.rice.edu/sharedfiles/{{item}}
+      dest: /etc/profile.d/{{item}}
+      force: yes
+      mode: 0644
+    with_items:
+      - osver.sh
+      - osver.csh
+  - name: Stop sssd service
+    service: name=sssd state=stopped
+  - name: remove files and directories
+    file:
+      state: "{{ item }}"
+      path: "/var/lib/sss/db"
+    with_items:
+      - absent
+      - directory
+  - name: Start sssd service
+    service: name=sssd state=started enabled=yes
+  - name: Run authconfig
+    script: /var/www/html/sharedfiles/authconfig.sh
+  - name: Stop NetworkManager service
+    service: name=NetworkManager state=stopped enabled=no
+  - name: Stop firewalld service
+    service: name=firewalld state=stopped enabled=no
+  - name: reStart autofs service
+    service: name=autofs state=restarted

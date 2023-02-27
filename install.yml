@@ -1,0 +1,7 @@
+---
+- hosts: tomcat_node
+  tasks:
+  - name: Install tomcat Package
+    yum: name=tomcat state=latest
+  - name: Start and Enable tomcat service
+    service: name=tomcat state=restarted enabled=yes

@@ -1,0 +1,12 @@
+---
+- hosts: cmor2208a.caam.rice.edu
+  tasks:
+  - name: Update ldap.conf file
+    ansible.builtin.lineinfile:
+      path: /etc/openldap/ldap.conf
+      regexp: '^URI'
+      line: 'URI ldap://han.stat.rice.edu'
+  - name: Restart service autofs
+    ansible.builtin.service:
+      name: autofs
+      state: restarted

@@ -1,0 +1,68 @@
+---
+- hosts: hv.caam.rice.edu
+  become: yes
+  vars:
+    nessusAgentCApath: "/etc/pki/CA/certs"
+#    nessusAgentCAsrc: "InCommon_RSA_Server_CA.pem"
+    nessusAgentCAsrc: "https://www.incommon.org/custom/certificates/repository/sha384%20Intermediate%20cert.txt"
+    nessusAgentCAdest: "/etc/pki/CA/certs/InCommon_RSA_Server_CA.pem"
+#    nessus_key: 438e0ab6e8e83022eac4269e15ee967fd146d70551e48e8a2684c228617fd644
+    nessus_key: '99f2e7f61bc07affd7dd94566b19c573b5b57e8d86108a72a8146cb537417f8b'
+#    agent_host: agent-sso-ext.rice.edu
+    agent_host: nessus-mgr.rice.edu
+    agent_port: 443
+    agent_group: linux
+#    agent_file_src: /tmp/NessusAgent-7.6.1-es7.x86_64.rpm 
+#    agent_file_dest: /tmp/NessusAgent-7.6.1-es7.x86_64.rpm 
+  tasks:
+  - name: Create directories
+    file:
+       path: /etc/pki/CA/certs/
+       state: directory
+  - name: "Install Tenable NessusAgent"
+    yum:
+      name: NessusAgent
+      state: latest
+  - name: "Download {{ nessusAgentCAsrc }} to server"
+    get_url:
+      url: "{{ nessusAgentCAsrc }}"
+      dest: "{{ nessusAgentCAdest }}"
+  - name: enable/start nessusagent.service
+    systemd:
+      name: nessusagent
+      state: started
+      enabled: yes
+  - name: Check link status
+    shell: /opt/nessus_agent/sbin/nessuscli agent status; true
+    register: nessus_link_status
+  - name: Check Nessus Agent Service Status
+    shell: service nessusagent status; true
+    register: nessus_agent_service_status
+#  - name: Copy rpm file to server
+#    copy:
+#     src: "{{ agent_file_src }}"
+#     dest: "{{ agent_file_dest }}"
+#    when: "'Linked to: {{ agent_host }}' not in nessus_link_status.stdout"
+#  - name: Install Nessus Agent rpm from a local file
+#    yum:
+#      name: "{{ agent_file_dest }}"
+#      state: present
+#    when: "'Linked to: {{ agent_host }}' not in nessus_link_status.stdout"
+  - name: Link nessus agent to tenable
+    shell: /opt/nessus_agent/sbin/nessuscli agent link --host={{ agent_host }} --port={{ agent_port }} --key={{ nessus_key }} --groups={{ agent_group }} --ca-path={{ nessusAgentCAdest }}
+    when: nessus_link_status.stdout.find("{{ agent_host }}") == -1
+  - name: Starting Nessus Agent service
+    command: service nessusagent start
+    when: "('Linked to: {{ agent_host }}' not in nessus_link_status.stdout) and ('active (running)' not in nessus_agent_service_status.stdout)"
+#  - name: Install/update xagt
+#    yum:
+#      name: xagt
+#      state: latest
+#  - name: Copy config file
+#    copy:
+#       src: /var/www/html/sharedfiles/agent_config.json
+#       dest: /opt/fireeye
+#       mode: preserve
+#  - shell: /opt/fireeye/bin/xagt -i /opt/fireeye/agent_config.json
+#  - name: Start xagt service
+#    service: name=xagt state=started enabled=yes

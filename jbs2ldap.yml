@@ -1,0 +1,112 @@
+---
+- hosts: one
+  tasks:
+  - name: Stop the ypbind service
+    service: name=ypbind state=stopped enabled=no
+    ignore_errors: true
+  - name: Install yum Packages
+    yum:
+      name: "{{ packages }}"
+      state: latest
+    vars:
+      packages:
+      - sssd 
+      - openldap 
+      - openldap-clients 
+      - autofs 
+      - cups 
+      - nfs-utils 
+      - environment-modules
+      - tcsh
+  - name: Download automount map files
+    get_url: 
+      url: http://cassini.rice.edu/JBS/{{item}}
+      dest: /etc/{{item}}
+      force: yes
+      mode: 0644
+    with_items:
+    - auto.home
+    - auto.master
+  - name: Download sssd.conf ldap.conf 157753a5.0 client.conf modulespath osver.*
+    get_url: 
+      url: http://cassini.rice.edu/JBS/sssd.conf
+      dest: /etc/sssd/sssd.conf
+      force: yes
+      mode: 0600
+  - name: Download ldap.conf
+    get_url: 
+      url: http://cassini.rice.edu/JBS/ldap.conf
+      dest: /etc/openldap/ldap.conf
+      force: yes
+      mode: 0644
+  - name: Ensure dir cacerts exist
+    file: path=/etc/openldap/cacerts state=directory
+  - name: Download CA cert file
+    get_url: 
+      url: http://cassini.rice.edu/JBS/cacerts/157753a5.0
+      dest: /etc/openldap/cacerts/157753a5.0
+      force: yes
+      mode: 0644
+  - name: Download cups client configuration file
+    get_url: 
+      url: http://cassini.rice.edu/JBS/client.conf
+      dest: /etc/cups/client.conf
+      force: yes
+      mode: 0644
+  - name: Download modulespath file
+    get_url: 
+      url: http://cassini.rice.edu/JBS/modulespath
+      dest: /usr/share/Modules/init/.modulespath
+      force: yes
+      mode: 0644
+  - name: Download OSVER checking files
+    get_url: 
+      url: http://cassini.rice.edu/JBS/{{item}}
+      dest: /etc/profile.d/{{item}}
+      force: yes
+      mode: 0644
+    with_items:
+    - osver.sh
+    - osver.csh
+  - name: Start sssd service
+    service: name=sssd state=restarted enabled=yes
+  - name: Run authconfig
+    script: /var/www/html/JBS/authconfig.sh
+  - name: Start autofs service
+    service: name=autofs state=restarted enabled=yes
+  - name: Stop NetworkManager service
+    service: name=NetworkManager state=stopped enabled=no
+  - name: Ensure dir /opt2 exist
+    file: path=/opt2 state=directory
+  - name: line insert
+    lineinfile:
+        regexp: 'jgsrc1.rice.edu'
+        path: /etc/fstab
+        line: 'jgsrc1.rice.edu:/opt/software  /opt2   nfs     ro 0 0'
+        state: present
+        insertbefore: BOF
+  - name: Get /opt2 mounted
+    mount: 
+      path: /opt2
+      src: jgsrc1.rice.edu:/opt/software
+      fstype: nfs
+      opts: ro
+      state: present
+  - name: Disable selinux
+    command: setenforce 0
+  - name: Replace enforcing by permissive
+    replace:
+      path: /etc/sysconfig/selinux
+      regexp: '[Ee]nforcing'
+      replace: 'permissive'
+    ignore_errors: true
+  - name: Ensure group "dip" exists
+    group:
+      name: dip
+      gid: 40
+      state: present
+  - name: Ensure group "dop" exists
+    group:
+      name: dop
+      gid: 91
+      state: present

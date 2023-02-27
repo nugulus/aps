@@ -1,0 +1,14 @@
+---
+- hosts: www
+  tasks:
+  - name: Copy file
+    copy:
+       src: src/auto.www
+       dest: /etc/auto.www
+       owner: root
+       group: root
+       mode: '0644'
+  - name: Restart service autofs, in all cases
+    service:
+      name: autofs
+      state: restarted

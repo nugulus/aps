@@ -1,0 +1,10 @@
+---
+- hosts: one
+  tasks:
+  - name: NFS mount as v3
+    mount:
+      path: /opt2
+      src: nfs.rdf.rice.edu:/ifs/research/shares/nfs/{{ ansible_domain.split('.')[0] | lower }}
+      fstype: nfs
+      opts: rw,intr,bg,vers=3
+      state: mounted

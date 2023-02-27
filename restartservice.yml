@@ -1,0 +1,8 @@
+---
+- hosts: one
+  tasks:
+  - name: Restart service ypbind, in all cases
+    service:
+      name: ypbind
+      state: restarted
+#    when: ansible_distribution == 'RedHat' and ansible_distribution_major_version == '6'

@@ -1,0 +1,70 @@
+---
+- hosts: one
+  tasks:
+  - name: Ensure dir cacerts exist
+    file: path=/etc/openldap/cacerts state=directory
+  - name: Download CA cert file
+    get_url:
+      url: http://cassini.rice.edu/sharedfiles/cacerts/fc5a8f99.0
+      dest: /etc/openldap/cacerts/fc5a8f99.0
+      force: yes
+      mode: 0644
+  - name: Remove the expired certificate
+    file:
+        path: /etc/openldap/cacerts/157753a5.0
+        state: absent
+  - name: Download ldap.conf
+    get_url: 
+      url: http://cassini.rice.edu/sharedfiles/ldap.conf
+      dest: /etc/openldap/ldap.conf
+      force: yes
+      mode: 0644
+  - name: Download autofs file to use openldap maps
+    get_url: 
+      url: http://cassini.rice.edu/sharedfiles/autofs
+      dest: /etc/sysconfig/autofs
+      force: yes
+      mode: 0644
+  - name: Download nsswitch.conf file. The later run of authconfig doesn't change this file has been proved 
+    get_url: 
+      url: http://cassini.rice.edu/sharedfiles/nsswitch.conf
+      dest: /etc/nsswitch.conf
+      force: yes
+      mode: 0644
+  - name: Delete multiple files 
+    file:
+      path: "{{ item }}"
+      state: absent
+    with_items:
+      - /etc/auto.misc
+      - /etc/auto.net
+      - /etc/auto.master
+      - /etc/auto.master.rpmnew
+      - /etc/auto.smb
+      - /etc/auto.import
+  - name: Copy auto.home to /var/local
+    copy: remote_src=True src=/etc/auto.home dest=/var/local/auto.home
+    ignore_errors: true
+  - name: Remove auto.home file
+    file: path=/etc/auto.home state=absent
+    ignore_errors: true
+  - name: Copy auto.www to /var/local
+    copy: remote_src=True src=/etc/auto.www dest=/var/local/auto.www
+    ignore_errors: true
+  - name: Remove auto.www file
+    file: path=/etc/auto.www state=absent
+    ignore_errors: true
+  - name: "Download the proper sssd.conf file"
+    get_url:
+      url: http://cassini.rice.edu/{{  ansible_domain.split('.')[0] | upper }}/sssd.conf
+      dest: /etc/sssd/sssd.conf
+      force: yes
+      mode: 0600
+  - name: Start sssd service
+    service: name=sssd state=restarted enabled=yes
+  - name: Run authconfig
+    script: /var/www/html/sharedfiles/authconfig.sh
+  - name: Ensure dir /www exist
+    file: path=/www state=directory
+  - name: Start autofs service
+    service: name=autofs state=restarted enabled=yes

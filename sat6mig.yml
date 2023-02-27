@@ -1,0 +1,117 @@
+---
+- hosts: one
+#  become: true
+#  become_user: root
+#  become_method: sudo
+#  remote_user: root
+  gather_facts: true
+  tasks:
+  - shell: |
+      cat << EOF > /etc/profile.d/repotype.sh
+       if   grep -q -i "Server" /etc/redhat-release ; then
+       export REPOTYP=Server
+       elif grep -q -i "Workstation" /etc/redhat-release ; then
+       export REPOTYP=Workstation
+       else
+       echo "Is this OS a Client?"
+       fi
+      EOF
+
+  - name: only gather facts
+    setup:
+
+  - name: yum clean all
+    command:
+      cmd: yum clean all
+      warn: no
+    ignore_errors: yes
+
+  - name: Unregister from rhn6.rice.edu
+    redhat_subscription:
+      state: absent
+    ignore_errors: yes
+
+  - name: Removed rhn6 pointers
+    yum:
+      name:
+        - katello-ca-consumer*
+        - katello-agent
+        - insights-client
+      state: absent
+    ignore_errors: yes
+
+  - name: subscription-manager clean
+    command: subscription-manager clean
+    ignore_errors: yes
+
+  - name: Install updated Satellite 6 pointers
+    yum:
+      name: http://satellite.rice.edu/pub/katello-ca-consumer-latest.noarch.rpm
+      state: present
+
+  - name: Register RHEL7 Server to Satellite 6
+    redhat_subscription:
+      state: present
+      activationkey: caam-7serv
+      org_id: EI
+      force_register: yes
+    when: (ansible_facts['distribution'] == "RedHat" and ansible_facts['distribution_major_version'] == "7" and ansible_env['REPOTYP'] == "Server")
+
+  - name: Register RHEL7 Workstation to Satellite 6
+    redhat_subscription:
+      state: present
+      activationkey: caam-7wkst
+      org_id: EI
+      force_register: yes
+    when: (ansible_facts['distribution'] == "RedHat" and ansible_facts['distribution_major_version'] == "7" and ansible_env['REPOTYP'] == "Workstation")
+
+  - name: Register RHEL6 Server to Satellite 6
+    redhat_subscription:
+      state: present
+      activationkey: RHEL6Server
+      org_id: EI
+      force_register: yes
+    when: (ansible_facts['distribution'] == "RedHat" and ansible_facts['distribution_major_version'] == "6" and ansible_env['REPOTYP'] == "Server")
+
+  - name: Register RHEL6 Workstation to Satellite 6
+    redhat_subscription:
+      state: present
+      activationkey: RHEL6Workstation
+      org_id: EI
+      force_register: yes
+    when: (ansible_facts['distribution'] == "RedHat" and ansible_facts['distribution_major_version'] == "6" and ansible_env['REPOTYP'] == "Workstation")
+
+  - name: Install Katello-Agent
+    yum:
+      name: katello-agent
+      state: present
+
+  - name: Install Insights-Client
+    yum:
+      name: insights-client
+      state: present
+
+  - name: Register Insights-client
+    command: insights-client --register
+
+  - name: Remove RHN Client packages
+    yum:
+      name:
+        - rhn-check
+        - rhn-custom-info
+        - rhnsd
+        - yum-rhn-plugin
+        - rhn-client-tools
+        - rhnlib
+        - rhnpush
+        - rhncfg-client
+        - rhn-setup
+        - rhnmd
+        - rhncfg-management
+        - rhncfg
+        - rhn-setup-gnome
+        - rhncfg-actions
+        - osad
+        - osa-common
+      state: absent 
+    ignore_errors: yes

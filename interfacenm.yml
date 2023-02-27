@@ -1,0 +1,9 @@
+---
+- hosts: brpc
+  tasks:
+  - name: Print the network interface name
+    shell: echo "{{ ansible_default_ipv4.interface }}"
+    register: interface
+
+  - debug: msg="{{ interface.stdout }}"
+

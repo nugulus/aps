@@ -1,0 +1,21 @@
+  - name: Create a directory
+    file:
+       path: /opt3
+       state: directory
+  - name: Modify a line in fstab
+    lineinfile:
+      path: /etc/fstab
+      line: "polonius.caam.rice.edu:/u/site	/opt3	nfs	intr,bg	0	0"
+      state: present
+  - name: Mount NFS volume
+    ansible.posix.mount:
+       src: polonius.caam.rice.edu:/u/site	
+       path: /opt3
+       opts: rw,sync,hard
+       state: mounted
+       fstype: nfs
+  - name: Modify a line in .modulefiles
+    lineinfile:
+      path: /usr/share/Modules/init/.modulespath
+      line: "/opt3/etc/modulefiles"
+      state: present

@@ -1,0 +1,15 @@
+---
+- hosts: caampc1703.caam.rice.edu
+  tasks:
+  - name: Copy Rice.conf
+    copy:
+       src: /var/www/html/sharedfiles/Rice.conf
+       dest: /etc/rsyslog.d/Rice.conf
+       mode: preserve
+#       owner: root
+#       group: root
+#       mode: '0644'
+  - name: Restart service rsyslog, in all cases
+    service:
+      name: rsyslog
+      state: restarted

@@ -1,0 +1,8 @@
+---
+- hosts: localhost
+  tasks:
+  - name: Download foo.pem
+    get_url:
+      url: https://www.incommon.org/custom/certificates/repository/sha384%20Intermediate%20cert.txt
+      dest: /tmp/foo.pem
+      mode: '0440'

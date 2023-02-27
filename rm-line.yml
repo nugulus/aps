@@ -1,0 +1,20 @@
+---
+- hosts: caam19
+  tasks:
+  - name: unmount nfs
+    mount:
+             path: /opt1/opt.LOCAL
+             state: unmounted
+    register: result
+#  - debug:
+#        var=result
+  - name: "Find a line to remove"
+    tags: example1
+    lineinfile:
+       path: /etc/fstab
+       # String to Search
+       regexp: "/opt1/opt.LOCAL" 
+       # State is set to Absent to remove if the Searching Line is found
+       state: absent
+       backup: yes
+    register: example1out

@@ -1,0 +1,22 @@
+---
+- hosts: caam18
+  tasks:
+  - name: Check yum database
+    command: yum clean all
+    register: result
+    ignore_errors: True
+  - name: Fix yum database
+    shell: rm -rf /var/lib/rpm/__db.00*
+    when: result is failed
+  - name: Run command again
+    shell: yum clean all
+  - name: Modify perm
+    file:
+      path: "{{ item }}"
+      owner: root
+      group: root
+      mode: '0644'
+    with_items:
+      - /var/lib/rpm/__db.001
+      - /var/lib/rpm/__db.002
+      - /var/lib/rpm/__db.003

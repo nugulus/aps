@@ -1,0 +1,15 @@
+---
+- hosts: one
+  tasks:
+  - name: Copy directory
+    copy:
+       src: src/linux
+       dest: /root/
+  - name: Install racadm
+    command: chdir=/root/linux/rac/ {{ item }}
+    with_items:
+    - chmod 755 install_racadm.sh
+    - ./install_racadm.sh
+#  - name: Change the iDrac password (Tested to work for iDrac6 and up)
+#    command: "/opt/dell/srvadmin/sbin/racadm config -g cfgUserAdmin -o cfgUserAdminPassword -i 2 laoshud@m1" 
+#Have done password changing on fs.rice.edu,

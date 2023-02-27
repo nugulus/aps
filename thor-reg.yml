@@ -1,0 +1,13 @@
+---
+- hosts: thor.stat.rice.edu
+  tasks:
+  - name: Install updated Satellite 6 ca
+    yum:
+      name: http://satellite.rice.edu/pub/katello-ca-consumer-latest.noarch.rpm
+      state: present
+#  - name: Register RHEL8 Server to Satellite 6
+#    redhat_subscription:
+#      state: present
+#      activationkey: caam-8
+#      org_id: EI
+#      force_register: yes

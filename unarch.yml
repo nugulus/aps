@@ -1,0 +1,17 @@
+---
+- hosts: caampc
+  tasks:
+  - name: unarchive Slicer
+    ansible.builtin.unarchive:
+       src: /var/www/html/sharedfiles/Slicer-411.tar.gz
+       dest: /usr/local/
+  - name: copy on remote
+    shell: cp -rp /usr/local/Slicer-4.11.20210226-linux-amd64/* /usr/local/
+  - name: Remove directory
+    file:
+        path: /usr/local/Slicer-4.11.20210226-linux-amd64
+        state: absent
+  - name: unarchive cvx
+    ansible.builtin.unarchive:
+       src: src/cvx-a64.tar.gz
+       dest: /usr/local/

@@ -1,0 +1,29 @@
+---
+- hosts: one
+  tasks:
+  - name: Stop slapd
+    service: name=slapd state=stopped
+  - name: remove files and directories under /var/lib/ldap
+    file:
+      state: "{{ item }}"
+      path: "/var/lib/ldap"
+    with_items:
+      - absent
+      - directory
+  - name: Copy the DB_CONIG file to /var/lib/ldap
+    get_url:
+      url: http://cassini.rice.edu/sharedfiles/DB_CONFIG
+      dest: /var/lib/ldap/DB_CONFIG
+      force: yes
+      mode: 0644
+  - name: Update db
+    shell: slapadd -n 1 -f /etc/openldap/slapd.conf -l /BK/ol/092120.ldif
+  - name: Recursively change ownership of a directory
+    file:
+      path: /var/lib/ldap
+      state: directory
+      recurse: yes
+      owner: ldap
+      group: ldap
+  - name: Start slapd
+    service: name=slapd state=started

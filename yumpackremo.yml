@@ -1,0 +1,16 @@
+---
+#- hosts: caampc,gmig
+- hosts: caam18
+  tasks:
+  - name: Remove yum Packages
+    yum: 
+      name: "{{ packages }}"
+      state: absent
+    vars:
+      packages:
+      - matlab
+      - matlab-base
+      - matlab-help
+      - matlab-toolbox
+      - puppet-agent
+      - puppet5-release

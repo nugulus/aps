@@ -1,0 +1,14 @@
+---
+- hosts: one
+  tasks:
+#  - shell: hostname 
+#    register: myhostname
+#  - debug: msg="{{myhostname.stdout}}"
+  - shell: |
+      cat << EOF > /tmp/pupconf
+      [main]
+      certname = msg
+      server = puppet.arc.rice.edu
+      environment = production
+      runinterval = 1h
+      EOF

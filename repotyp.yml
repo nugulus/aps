@@ -1,0 +1,14 @@
+---
+- hosts: one
+  tasks:
+  - shell: |
+      cat << EOF > /etc/profile.d/repotype.sh
+       if   grep -q -i "Server" /etc/redhat-release ; then
+       export REPOTYP=Server
+       elif grep -q -i "Workstation" /etc/redhat-release ; then
+       export REPOTYP=Workstation
+       else
+       echo "Is this OS a Client?"
+       fi
+      EOF
+

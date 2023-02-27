@@ -1,0 +1,15 @@
+---
+- hosts: one
+  tasks:
+#  - shell: subscription-manager repos --enable rhel-7-workstation-optional-rpms 
+  - name: Install yum-cron Package
+    yum: name=yum-cron state=latest
+  - name: Copy file
+    copy:
+       src: src/yum-cron.conf
+       dest: /etc/yum/yum-cron.conf
+       owner: root
+       group: root
+       mode: '0644'
+  - name: Start and Enable yum-cron service
+    service: name=yum-cron state=restarted enabled=yes

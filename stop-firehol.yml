@@ -1,0 +1,6 @@
+---
+- hosts: firehol
+  tasks:
+  - name: Stop firehol
+    service: name=firehol state=stopped enabled=no
+    ignore_errors: true

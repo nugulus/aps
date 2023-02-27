@@ -1,0 +1,7 @@
+---
+- hosts: one
+  tasks:
+   - debug: var=ansible_facts
+
+# The following command get on the command line get the same result
+# ansible one -m setup 

@@ -1,0 +1,14 @@
+- hosts: gmig
+  tasks:
+#  - name: install prerequisite
+#    yum:
+#      name: ['yum-utils', 'device-mapper-persistent-data', 'lvm2', 'container-selinux']
+#  - name: add texstudio repo
+#    command: yum-config-manager --add-repo http://download.opensuse.org/repositories/home:/jsundermeyer/CentOS_CentOS-7/home:jsundermeyer.repo
+  - name: install texstudio-qt4
+    yum: name=texstudio-qt4 state=latest
+#  - name: Start the service
+#    service: name=docker state=started enabled=yes
+
+# tested at qi.arc.rice.edu, homer.rice.edu
+#    command: subscription-manager repos --enable=rhel-7-server-extras-rpms

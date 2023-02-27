@@ -1,0 +1,52 @@
+---
+- hosts: pallene.rice.edu
+  tasks:
+  - name: install prerequisite for docker-ce
+    yum:
+      name: ['yum-utils', 'device-mapper-persistent-data', 'lvm2', 'container-selinux']
+  - name: add docker-ce repo
+    command: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+  - name: install docker-ce
+    yum: name=docker-ce state=latest
+  - name: Start the docker service
+    service: name=docker state=started enabled=yes
+  - name: Modify docker.service
+    replace:
+      path: /usr/lib/systemd/system/docker.service
+      regexp: '^(ExecStart=.*sock)$'
+      replace: '\1 --exec-opt native.cgroupdriver=systemd'
+  - name: Restart service docker, also issue daemon-reload to pick up config changes
+    ansible.builtin.systemd:
+      state: restarted
+      daemon_reload: yes
+      name: docker
+  - shell: |
+      cat <<EOF > /etc/yum.repos.d/kubernetes.repo
+      [kubernetes]
+      name=Kubernetes
+      baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+      enabled=1
+      gpgcheck=1
+      repo_gpgcheck=1
+      gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+      EOF
+  - name: install kubeadm
+    yum: name=kubeadm state=latest
+  - name: Start the kubelet service
+    service: name=kubelet state=started enabled=yes
+  - name: Disable SWAP since kubernetes can't work with swap enabled (1/2)
+    shell: |
+      swapoff -a
+#    when: kubernetes_installed is changed
+  - name: Disable SWAP in fstab since kubernetes can't work with swap enabled (2/2)
+    replace:
+      path: /etc/fstab
+      regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
+      replace: '# \1'
+#    when: kubernetes_installed is changed
+  - name: Initialize master
+    shell: |
+      kubeadm init --control-plane-endpoint 168.7.74.150
+# The following line has to be done at the console
+#      export KUBECONFIG=/etc/kubernetes/admin.conf
+      kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"

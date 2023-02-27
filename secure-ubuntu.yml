@@ -1,0 +1,53 @@
+---
+ - hosts: hv.caam.rice.edu
+   vars:
+     pass_var: "$6$saltsalt$rkpWJHG//7FYYMwJkcgkD0YTBe.DSDvb8K2OrR5aLVxbzuXjN6uhN0suacpUiR1nAzTIF0Q9jC52ZJYuKg1yI0"
+
+   tasks:
+   - name: Create a login user
+     user:
+      name: genshenyemao
+#      password: "{{ ansible_local['prefer']['genshenyemao']['password'] }}"
+      password: "{{ pass_var }}"
+      groups: # Empty by default, here we give it some groups
+#       - docker
+       - wheel
+      state: present
+      shell: /bin/bash       # Defaults to /bin/bash
+      system: no             # Defaults to no
+      createhome: yes        # Defaults to yes
+      home: /var/opt/genshenyemao  # Defaults to /home/<username>
+   - name: Ansible create file with content example
+     copy:
+      dest: "/etc/sudoers.d/meimen"
+      content: |
+        genshenyemao	ALL=(ALL) NOPASSWD:	ALL
+   - name: Add PRL to file
+     lineinfile:
+       path: /etc/ssh/sshd_config
+       regex: ^PermitRootLogin
+       line: PermitRootLogin without-password
+       insertafter: "^#PasswordAuthentication yes"
+       backup: yes
+   - name: Add CRA to file
+     lineinfile:
+       path: /etc/ssh/sshd_config
+       regex: ^ChallengeResponseAuthentication
+       line: ChallengeResponseAuthentication no
+   - name: Remove a line if present
+     lineinfile:
+       path: /etc/ssh/sshd_config
+       regex: ^PasswordAuthentication
+       line: PasswordAuthentication no
+       state: absent
+       backup: yes
+   - name: Add AU to file
+     lineinfile:
+       path: /etc/ssh/sshd_config
+       regex: ^AllowUsers
+       line: AllowGroups root genshenyemao mascfac caamgrads faculty caamugrad caamstaff caammaint geoclue lonesco
+       state: present
+   - name: Restart service sshd, in all cases
+     service:
+       name: sshd
+       state: restarted

@@ -1,0 +1,34 @@
+---
+- hosts: nessus-167155
+  tasks:
+#  - name: Remove a list of packages
+#    yum:
+#      name:
+#        - matlab*
+#        - puppet*
+#        - mathematica*
+#        - texlive*
+#      state: absent
+  - name: Install a list of packages
+    yum:
+      name:
+        - kernel-devel
+      state: present
+  - name: upgrade all packages except some
+    yum:
+      name: '*'
+      exclude:
+        - python2-qpid-proton
+        - qpid-proton-c
+        - python-qpid-proton
+        - skype
+#        - kernel*
+        - matlab*
+        - puppet*
+        - mathematica*
+        - texlive*
+      state: latest
+  - name: Reboot the machine (Wait for 3 m)
+    reboot:
+        reboot_timeout: 180
+# It is known that 7.4 and 7.5 update need the exclusion of the three packages.

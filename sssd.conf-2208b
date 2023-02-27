@@ -1,0 +1,32 @@
+[domain/LDAP]
+auth_provider = ldap
+cache_credentials = true
+chpass_provider = none
+id_provider = ldap
+ldap_default_authtok = dh}np9o}
+ldap_default_authtok_type = password
+ldap_default_bind_dn = cn=linux,ou=Service Accounts,dc=rice,dc=edu
+ldap_user_search_base = ou=People,dc=rice,dc=edu
+ldap_group_object_class = posixGroup
+ldap_group_search_base = ou=linux,ou=Groups,dc=rice,dc=edu
+ldap_uri = ldaps://ldap.rice.edu:636
+#override_gid = 3026
+#override_homedir = /opt/luser
+override_homedir = /home/%u
+override_shell = /bin/bash
+ldap_id_use_start_tls = True
+cache_credentials = True
+ldap_tls_cacert = /etc/openldap/cacerts/fc5a8f99.0
+ldap_tls_reqcert = allow
+
+[nss]
+filter_users = root,bin,daemon,adm,lp,sync,shutdown,halt,mail,uucp,operator,games,gopher,ftp,nobody,dbus,usbmuxd,rpc,avahi-autoipd,vcsa,rtkit,abrt,saslauth,postfix,haldaemon,ntp,mysql,apache,avahi,rpcuser,nfsnobody,pulse,gdm,sshd,dovecot,dovenull,tcpdump,oprofile,hsqldb
+
+[pam]
+pam_verbosity = 3
+
+[sssd]
+config_file_version = 2
+domains = LDAP
+services = nss,pam,autofs
+

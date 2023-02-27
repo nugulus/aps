@@ -1,0 +1,10 @@
+---
+- hosts: one
+  tasks:
+  - name: Check /boot freespace
+    shell: df /boot --output\=avail | tail -1
+    register: boot_freespace
+      
+  - fail:
+      msg: /boot does not have the minimum space required to continue (3Gb requested). 
+    when: boot_freespace.stdout|float is lt 3000000

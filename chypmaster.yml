@@ -1,0 +1,19 @@
+---
+- hosts: one
+  tasks:
+  - name: Copy file
+    copy:
+       src: src/yp.conf
+       dest: /etc/yp.conf
+       owner: root
+       group: root
+       mode: '0644'
+  - name: Restart service ypbind, in all cases
+    service:
+      name: ypbind
+      state: restarted
+#    when: ansible_distribution == 'RedHat' and ansible_distribution_major_version == '6'
+  - name: Restart service autofs, in all cases
+    service:
+      name: autofs
+      state: restarted

@@ -1,0 +1,16 @@
+---
+- hosts: heinken
+  tasks:
+  - name: Install zabbix agent repo
+    yum: name=https://repo.zabbix.com/zabbix/4.2/rhel/6/x86_64/zabbix-release-4.2-1.el6.noarch.rpm
+  - name: Install zabbix agent package
+    yum: name=zabbix-agent state=latest
+  - name: Download config file
+    get_url: 
+      url: http://cassini.rice.edu/sharedfiles/zabbix_agentd.conf
+      dest: /etc/zabbix/zabbix_agentd.conf
+      force: yes
+      mode: 0644
+  - name: Start the service
+    service: name=zabbix-agent state=restarted enabled=yes
+   

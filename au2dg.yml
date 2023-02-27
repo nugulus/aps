@@ -1,0 +1,31 @@
+---
+- hosts: caampc1602.caam.rice.edu
+  vars_files:
+       - workstations.yml
+  vars:
+     runner: "{{ workstations[ansible_hostname].runner }}"
+  tasks:
+# The following 5 lines didn't work, don't know why.
+#  - name: Extract values from file
+#    set_fact:
+#       "{{ ansible_hostname }}": true
+#    loop: "{{ lookup('dict', workstations) }}"
+#    when: "{{ ansible_hostname }} in item.key"
+# The following three lines worked.
+#  - debug:
+#       msg: "{{ runner.split(' ')[0] }}"
+#    when: ansible_hostname in workstations
+  - name: install prerequisite for docker
+    yum:
+      name: ['yum-utils', 'device-mapper-persistent-data', 'lvm2', 'container-selinux']
+  - name: add docker-ce repo
+    command: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+  - name: install docker-ce
+    yum: name=docker-ce state=latest
+  - name: Start the service
+    service: name=docker state=started enabled=yes
+  - name: adding user to group
+    user:
+      name: "{{ runner.split(' ')[0] }}"
+      groups: docker
+      append: yes

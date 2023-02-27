@@ -1,0 +1,21 @@
+---
+- hosts: one
+  tasks:
+  - name: Ensure dir cacerts exist
+    file: path=/etc/openldap/cacerts state=directory
+  - name: Download CA cert file
+    get_url:
+      url: http://cassini.rice.edu/sharedfiles/cacerts/fc5a8f99.0
+      dest: /etc/openldap/cacerts/fc5a8f99.0
+      force: yes
+      mode: 0644
+  - name: Remove the expired certificate
+    file:
+        path: /etc/openldap/cacerts/157753a5.0
+        state: absent
+  - name: Download ldap.conf
+    get_url:
+      url: http://cassini.rice.edu/sharedfiles/ldap.conf
+      dest: /etc/openldap/ldap.conf
+      force: yes
+      mode: 0644

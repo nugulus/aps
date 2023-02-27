@@ -1,0 +1,17 @@
+---
+- hosts: caam18
+  tasks:
+  - name: Stop firehol
+    service: name=firehol state=stopped enabled=no
+    ignore_errors: true
+  - name: Install iptables-services Package
+    yum: name=iptables-services state=latest
+  - name: Download iptables file
+    get_url: 
+      url: http://cassini.rice.edu/sharedfiles/iptables.caam181009
+      dest: /etc/sysconfig/iptables
+      force: yes
+      mode: 0644
+  - name: Start the iptable service
+    service: name=iptables state=restarted enabled=yes
+   

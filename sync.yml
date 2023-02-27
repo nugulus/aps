@@ -1,0 +1,8 @@
+---
+- hosts: caam181009.caam.rice.edu
+  tasks:
+  - name: Synchronization using rsync protocol (push)
+    ansible.posix.synchronize:
+      src: /var/www/html/sharedfiles/Slicer-4.11.20210226-linux-amd64
+      dest: rsync://{{ inventory_hostname }}/usr/local/
+# connection failed - 1/12/22 11:10am

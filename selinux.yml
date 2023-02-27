@@ -1,0 +1,8 @@
+---
+- hosts: one
+  tasks:
+  - name: Replace enforcing by permissive
+    replace:
+      path: /etc/sysconfig/selinux
+      regexp: '[Ee]nforcing|[Dd]isabled'
+      replace: 'permissive'

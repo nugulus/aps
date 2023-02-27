@@ -1,0 +1,9 @@
+---
+- hosts: vm8
+  tasks:
+  - name: upgrade all packages except some
+    yum:
+      name: '*'
+      state: latest
+  - name: Rebooting
+    reboot:

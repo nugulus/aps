@@ -1,0 +1,104 @@
+     workstations:
+       caam181011:
+         runner: atb8 jz71
+       caam181015:      
+         runner: ema8 jz71
+       caam181012:
+         runner: btd2 jz71
+       caam181009:
+         runner: bl46 jz71
+       caam181013:
+         runner: sdm11 jz71
+       caam181014:
+         runner: dtm3 jz71
+       caam181010:
+         runner: mm115 jz71
+       caam181016:
+         runner: yr21 jz71
+       guanghui:
+         runner: symes jz71
+       caampc1408:
+         runner: dr34 jz71
+       caampc1701:
+         runner: yz89 jz71
+       caampc1702:
+         runner: yx67 jz71
+       caampc1703:
+         runner: rq10 jz71
+       caampc1704:
+         runner: ngs6 jz71
+       caampc1705:
+         runner: kg26 jz71
+       caampc1706:
+         runner: cgt3 jz71
+       caampc1707:
+         runner: ema8 mjb6 jz71
+       brpc1701:
+         runner: br1 jz71
+       caampc1403:
+         runner: anp10 jz71
+       heinkenpc1404:
+         runner: nobody jz71
+       gmig1601:
+         runner: jh102 jz71
+       caampc1607:
+         runner: cs99 jz71
+       gmig1501:
+         runner: xl53 jz71
+       gmig1504:
+         runner: mvd2 jz71
+       gmig1503:
+         runner: js116 jz71
+       gmig1502:
+         runner: jc112 jz71
+       gmig1505:
+         runner: lb51 jz71
+       gmig1506:
+         runner: map19 haj2 jz71
+       caam190828:
+         runner: sak8 jz71
+       caam190830:
+         runner: ta21 jz71
+       caam190827:
+         runner: bca3 jz71
+       caam190901:
+         runner: njk7 jz71
+       caam190831:
+         runner: ll64 jz71
+       caam190826:
+         runner: ka56 jz71
+       caam190902:
+         runner: dsg12 jz71
+       caam190829:
+         runner: yl184 jz71
+       caampc1601:
+         runner: djm13 jz71
+       caampc1602:
+         runner: sdb3 jz71
+       caampc1603:
+         runner: xw58 jz71
+       caampc1604:
+         runner: nt14 jz71
+       caampc1605:
+         runner: bs58 jz71
+       caampc1606:
+         runner: rm70 jz71
+       cassini:
+         runner: dalton jz71
+       pallene:
+         runner: jz71
+       cmor2208a:
+         runner: atb8 
+       cmor2208b:
+         runner: ak121 jz71 
+       cmor2208c:
+         runner: jz71
+       cmor2208d:
+         runner: jds27 jz71
+       cmor2208e:
+         runner: rma10 jz71
+       cmor2208f:
+         runner: jz71
+       cmor2208g:
+         runner: ask15 jz71
+       ksenia: tolya jz71

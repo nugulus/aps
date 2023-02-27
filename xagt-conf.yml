@@ -1,0 +1,28 @@
+---
+- hosts: cmor2208b.caam.rice.edu
+  tasks:
+  - name: Allow rhel-sat6-n1.rice.edu to connect ssh unrestricted.
+    iptables:
+      chain: INPUT
+      action: insert
+      protocol: tcp
+      destination_port: ssh
+      source: rhel-sat6-n1.rice.edu
+      jump: ACCEPT
+  
+  - name: Install Fireeye client
+    yum:
+      name: xagt
+      state: latest
+
+  - name: Install configuration file
+    template:
+      dest: /{{ XAGT_PATH }}/{{ XAGT_FILE }}
+      src: agent_config.json
+      mode: 0600
+      owner: root
+      group: root
+      backup: yes
+    notify:
+    - xagt setup
+    - "xagt service {{ ansible_facts['distribution_major_version'] }}"

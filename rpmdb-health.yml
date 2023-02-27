@@ -1,0 +1,13 @@
+---
+- hosts: one
+  tasks:
+  - name: Run command
+    shell: yum clean all > /dev/null
+#    no_log: true
+#    args:
+#       warn: false # set warn=false to prevent warning
+    register: yum_clean
+
+  - debug: msg="The registered variable output is {{ yum_clean.rc }}"
+#  - debug: msg="{{ rpm.stdout }}"
+#  - debug: msg="{{ rpm.stderr }}"

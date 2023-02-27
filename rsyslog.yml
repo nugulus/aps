@@ -1,0 +1,26 @@
+---
+- hosts: jones
+  tasks:
+  - name: Stop rsyslog
+    service:
+       name: rsyslog
+       state: stopped
+  - name: Copy Rice.conf
+    copy:
+       src: /var/www/html/sharedfiles/Rice.conf
+       dest: /etc/rsyslog.d/Rice.conf
+       mode: preserve
+  - name: Remove the line containing 9003
+    lineinfile:
+      path: /etc/rsyslog.conf
+      regexp: '9003'
+      line: '*.* @logs.rice.edu:9003'
+      state: absent
+  - name: Start rsyslog
+    service:
+       name: rsyslog
+       state: started
+
+#- hosts: caam18,caam19,caampc17,gmig,testserver
+#- hosts: caamserver,statserver,phys,math
+#- hosts: cmor2208,rhel8,vm7,vm8

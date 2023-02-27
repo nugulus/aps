@@ -1,0 +1,31 @@
+---
+- hosts: cmor2208a.caam.rice.edu
+  tasks:
+  - name: Modify a line in file
+    lineinfile:
+      path: /etc/default/grub
+      regexp: '^GRUB_CMDLINE_LINUX'
+      line: "GRUB_CMDLINE_LINUX=crashkernel=auto resume=UUID=7afe62cf-315f-4ade-b6dd-df30e8ebd80b rhgb quiet modprobe.blacklist=nouveau"
+      state: present
+  - name: Create file
+    command: touch /etc/modprobe.d/denylist.conf
+    args:
+      creates: /etc/modprobe.d/denylist.conf
+  - name: Add a line to file denylist.conf
+    lineinfile:
+      path: /etc/modprobe.d/denylist.conf
+#      line: {{ item }}
+      line: "blacklist nouveau"
+#    with_items:
+#      - "blacklist nouveau"
+#      - "options nouveau modeset=0"
+      state: present
+  - name: Change default target to multi-user.target
+    file:
+      src: /usr/lib/systemd/system/multi-user.target
+      dest: /etc/systemd/system/default.target
+      state: link
+  - name: Run shell commands
+    shell: |
+      dracut --force
+      grub2-mkconfig -o /boot/efi/EFI/redhat/grub.cfg

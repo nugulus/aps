@@ -1,0 +1,15 @@
+---
+- hosts: caam181010.caam.rice.edu
+  tasks:
+
+  - name: Install updated Satellite 6 ca
+    yum:
+      name: https://satellite.rice.edu/pub/katello-ca-consumer-latest.noarch.rpm
+      state: present
+
+  - name: Register to Satellite 6
+    redhat_subscription:
+      state: present
+      activationkey: caam-8
+      org_id: EI
+      force_register: yes

@@ -1,0 +1,10 @@
+---
+- hosts: tango.rice.edu
+  tasks:
+    - name: Ansible insert lineinfile
+      lineinfile:
+        path: /etc/auto.home
+        line: "jz71 esci-fs.rice.edu:/shares/ghomes/&"
+        state: present
+        backup: yes
+#        create: no

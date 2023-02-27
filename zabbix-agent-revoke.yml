@@ -1,0 +1,9 @@
+---
+- hosts: one
+  tasks:
+  - name: Remove zabbix agent repo
+    yum: name=zabbix-release.noarch state=removed
+  - name: Stop the service
+    service: name=zabbix-agent state=stopped enabled=no
+  - name: Remove zabbix agent package
+    yum: name=zabbix-agent state=removed

@@ -1,0 +1,31 @@
+---
+ - hosts: one
+   tasks:
+   - name: Add PRL to file
+     lineinfile:
+       path: /etc/ssh/sshd_config
+       regex: ^PermitRootLogin
+       line: PermitRootLogin without-password
+       insertafter: "^#PasswordAuthentication yes"
+       backup: yes
+   - name: Add CRA to file
+     lineinfile:
+       path: /etc/ssh/sshd_config
+       regex: ^ChallengeResponseAuthentication
+       line: ChallengeResponseAuthentication no
+   - name: Remove a line if present
+     lineinfile:
+       path: /etc/ssh/sshd_config
+       regex: ^PasswordAuthentication
+       line: PasswordAuthentication no
+       state: absent
+       backup: yes
+   - name: Add AG to file
+     lineinfile:
+       path: /etc/ssh/sshd_config
+       regex: ^AllowGroups
+       line: AllowGroups root genshenyemao
+   - name: Restart service sshd, in all cases
+     service:
+       name: sshd
+       state: restarted

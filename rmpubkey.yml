@@ -1,0 +1,12 @@
+---
+- hosts: vm7
+  tasks:
+  - name: Update authorized_keys file
+    lineinfile:
+      path: /root/.ssh/authorized_keys
+      state: absent
+      line: "{{ item }}"
+    with_items:
+    - 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC/eB8exVIYLqD3SSIzw4+H9Pkwj/2edM29W6Z08XW1Z7BiRUGWOu0ywELYnsPiaNTuk5OY/KTu9kaqpKNNLF0aFM/x7xtItYSqIyGk9uUIvFajLUXkx3EgNDBV93o3aRQBm5eR+kiyY9u4bTZcPrT4SokUumv3qW7QjUg+aGOhqeRW+UKu5E0F8bNHkT905MPeHPLBfke6C7G89Tw/a3R+hj7aUptZQee5tkRPy1eLrRKg2DCBd0LtXr4iO1g63X8BUe1rPDAymIzgdPXJHoRKBs18Y2EBL2AmuIUMlHfd5QG4ulUjCfN96UgKZPp54N0JMmHcVN5FtPFMppDRp3nl heider@orbit.local'
+    - 'ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAw2Mv8CCPH9Ljn+7a145/4HdHOa1bnPJ0Nh+OfcoUyyqwrsTiy/we+1jACndloYxih6wFhH1bMalQJ/IjDeRb433aKXotuMIsylyI/G8eoDwgwfUJJJK2Swk6D4x7m7Aif0xilPESpMuxR+IDcah0Eb8u/9oB1SS6hx/OZPipQzFpITMtRM9kK6gbRsNrnirzP8GHsvqZCjECZsHQlLKxBCGTvpyWGxqwiLrtf9BAcnod7ETFUZsE7KYTdQoGZmJeSRxAFk54Zrrux1AgSb+tOlgrwlG7K6b51bvEhK6HK2o4LHUuO5H8upNd/ipx0ODh60nQ1khEBH0SQjuMbhts8w== mc76@rice.edu'
+    - 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID5Atmzov0HM6WO3vRSDl4Y6rPS8CT7a0EuAMCaYQbnG mc76-ed25519@rice.edu'

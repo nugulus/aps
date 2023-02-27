@@ -1,0 +1,14 @@
+---
+- hosts: cmor2208
+  tasks:
+  - name: Install the skyp rpm from a remote repo
+    ansible.builtin.yum:
+      name: 
+        - https://go.skype.com/skypeforlinux-64.rpm
+      state: present
+      disable_gpg_check: yes
+  - name: Creating a symlink
+    ansible.builtin.file:
+          src: /usr/bin/skypeforlinux
+          dest: /usr/bin/skype
+          state: link

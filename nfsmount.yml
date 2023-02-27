@@ -1,0 +1,27 @@
+---
+- hosts: cmor2208
+  vars:
+    mynfs: "nfs.rdf.rice.edu:/ifs/research/shares/nfs/caam"
+    mountpoint: "/opt2"
+    permission: '0777'
+    myopts: 'rw,sync,vers=3'
+  tasks:
+  - name: utility present
+    ansible.builtin.yum:
+        name:
+          - nfs-utils
+        state: present
+  - name: check mountpoint exist
+    ansible.builtin.file:
+        path: "{{ mountpoint }}"
+        state: directory
+        mode: "{{ permission }}"
+        owner: root
+        group: root
+  - name: mount network share
+    ansible.posix.mount:
+        src: "{{ mynfs }}"
+        path: "{{ mountpoint }}"
+        fstype: nfs
+        opts: "{{ myopts }}"
+        state: mounted

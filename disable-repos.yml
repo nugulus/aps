@@ -1,0 +1,4 @@
+---
+- hosts: caampc1706.caam.rice.edu
+  tasks:
+  - shell: subscription-manager repos --disable=EI_Nvidia-EL8_x86_64 --disable=EI_RiceCustom-EL8_NginMX-EL8 --disable=EI_Rsyslog8-EL8_rsyslog_v8 --disable=EI_Zabbix4-EL8_Zabbix4-EL8
